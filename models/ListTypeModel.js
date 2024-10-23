@@ -8,6 +8,10 @@ const ListTypeSchema = new mongoose.Schema({
     emoji: {
         type: String,
         required: true
+    },
+    creator: {
+        type: String,
+        required: true
     }
 })
 
