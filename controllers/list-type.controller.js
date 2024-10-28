@@ -22,9 +22,7 @@ class ListTypeController {
 
     static async createListType (req, res) {
         try {
-            //Add the creator field to the request body
             req.body.creator = req._id
-            console.log(req.body)
             const newListType = new ListTypeModel(req.body)
             await newListType.save()
             res.json({
