@@ -13,20 +13,19 @@ const TaskSchema = new mongoose.Schema({
         type: Date
     },
     listType: {
-        type: {
-            title: {
-                type: String,
-                required: true
-            },
-            emoji: {
-                type: String,
-                required: true
-            }
-        },
+        type: String,
         required: true
+    },
+    reminder: {
+        unitTime: { type: String },
+        amount: { type: Number }
     },
     checked: {
         type: Boolean,
+        required: true
+    },
+    creator: {
+        type: String,
         required: true
     }
 })
