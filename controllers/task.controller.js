@@ -19,6 +19,23 @@ class TaskController {
         }
     }
 
+    static async getTaskByListType (req,res) {
+        try {
+            const userId = req._id
+            const tasks = await TaskModel.find({ creator: userId, listType: req.params.listTypeId })
+            res.json({
+                success: true,
+                data: tasks
+            })
+        } catch(err) {
+            res.json({
+                success: false,
+                message: `error: ${err}`
+            })
+            console.error(err)
+        }
+    }
+
     static async createTask (req,res) {
         try {
             req.body.creator = req._id
