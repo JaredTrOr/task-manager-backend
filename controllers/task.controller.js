@@ -21,7 +21,6 @@ class TaskController {
 
     static async createTask (req,res) {
         try {
-
             req.body.creator = req._id
             const newTask = new TaskModel(req.body)
             await newTask.save()
@@ -42,7 +41,7 @@ class TaskController {
 
     static async updateTask(req, res) {
         try {
-            const updatedTask = await TaskModel.findByIdAndUpdate(req.body._id, req.body)
+            const updatedTask = await TaskModel.findByIdAndUpdate(req.body._id, req.body, { new: true })
             res.json({
                 success: true,
                 message: 'La tarea se ha actualizado exitosamente',
