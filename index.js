@@ -22,7 +22,7 @@ webpush.setVapidDetails(
     process.env.VAPID_PRIVATE_KEY
 )
 
-// scheduleReminders()
+scheduleReminders()
 
 app.listen(PORT, () => {
     console.log(`Server running on port ${PORT}`)

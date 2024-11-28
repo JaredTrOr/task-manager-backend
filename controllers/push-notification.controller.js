@@ -2,30 +2,27 @@ import webpush from 'web-push'
 import PushNotificationSubscriptionModel from '../models/PushNotificationSubscriptionModel.js'
 
 class SubscriptionController {
-    static async saveSubscription (req,res) {
+    static async saveSubscription(req, res) {
         try {
-            // Check if subscription already exists
-            const existingSubscription = await PushNotificationSubscriptionModel.findOne({ userId: req.body.userId })
-            if (existingSubscription) {
-                res.json({
-                    success: false,
-                    message: 'Subscription already exists'
-                })
-                return
-            }
+            const { userId, ...subscriptionData } = req.body;
 
-            const newSubscription = new PushNotificationSubscriptionModel(req.body)
-            await newSubscription.save()
+            const updatedSubscription = await PushNotificationSubscriptionModel.findOneAndUpdate(
+                { userId }, 
+                { ...subscriptionData, userId }, 
+                { new: true, upsert: true } 
+            );
+    
             res.json({
                 success: true,
-                message: 'Subscription saved successfully',
-            })
-        } catch(err) {
+                message: updatedSubscription.wasNew ? 'Subscription created successfully' : 'Subscription updated successfully',
+                subscription: updatedSubscription
+            });
+        } catch (err) {
             res.json({
                 success: false,
-                message: `error: ${err}`
-            })
-            console.error(err)
+                message: `Error: ${err.message}`,
+            });
+            console.error(err);
         }
     }
     
@@ -59,7 +56,6 @@ class SubscriptionController {
         try {
             const token = await PushNotificationSubscriptionModel.findOne({ userId: req.body.userId }, { userId: 0, _id: 0, __v: 0 })
             console.log(token)
-            console.log(JSON.stringify(payload))
             
             webpush.sendNotification(
                 token,
