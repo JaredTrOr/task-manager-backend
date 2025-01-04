@@ -1,4 +1,5 @@
 import ListTypeModel from '../models/ListTypeModel.js'
+import TaskModel from '../models/TaskModel.js'
 
 class ListTypeController {
 
@@ -41,7 +42,20 @@ class ListTypeController {
 
     static async deleteListType (req, res) {
         try {
-            const listType = await ListTypeModel.deleteOne({ _id: req.params.id })
+            const listTypeId = req.params.id
+            const userId = req._id
+            
+            const task = await TaskModel.findOne({ listType: listTypeId, creator: userId })
+
+            if (task) {
+                res.json({
+                    success: false,
+                    message: 'La lista no puede ser eliminado porque esta siendo utilizado en una tarea'
+                })
+                return
+            }
+
+            const listType = await ListTypeModel.deleteOne({ _id: listTypeId })
             res.json({
                 success: true,
                 message: 'El list type fue eliminado exitosamente',
